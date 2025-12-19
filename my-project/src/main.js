@@ -1,5 +1,6 @@
 import "./style.css";
 
+const URL = "https://taylor-swift-api.vercel.app/api/albums/Taylor%20Swift";
 async function getData(URL) {
   try {
     const response = await fetch(URL);
@@ -12,6 +13,7 @@ async function getData(URL) {
     }
   } catch (error) {
     console.log(error);
+    console.log("There was an error fetching the data");
   }
 }
 getData(URL);
