@@ -9,8 +9,7 @@ async function getData(URL) {
       throw new Error(response);
     } else {
       const data = await response.json(); //makes the data into JSON object we can use
-      data.forEach((card) => console.log(card));
-      document.getElementById("api-response").textContent = data.title;
+      return data;
     }
   } catch (error) {
     console.log(error);
@@ -21,38 +20,19 @@ getData(URL);
 
 getData().then((data) => {
   console.log(data);
-
-  const ol = document.createElement("ol");
-
-  data.forEach((user) => {
-    const li = document.createElement("li");
-    li.innerHTML = user.name;
-
-    li.style.fontSize = "22px";
-
-    const ul = document.createElement("ul");
-
-    const company = document.createElement("li");
-    company.innerHTML = `Company: ${user.company.name}`;
-
-    const city = document.createElement("li");
-    city.innerHTML = `City: ${user.address.city}`;
-
-    const email = document.createElement("li");
-    email.innerHTML = `Email: ${user.email}`;
-
-    const phone = document.createElement("li");
-    phone.innerHTML = `Phone: ${user.phone}`;
-
-    ul.append(...[company, city, email, phone]);
-
-    li.appendChild(ul);
-
-    ol.appendChild(li);
+  let ol = "<ol>";
+  data.forEach((card) => {
+    ol += ` <li style="font-size: 22px;">${card.title}
+    <ul>
+    <li> Album Cover: ${card.albumCover} </li>
+    <li> Artist: ${card.artist} </li>
+    <li> Release Date: ${card.releaseDate} </li>
+    </ul>
+    </li>`;
   });
-
+  ol += "</ol>";
   const container = document.getElementById("container");
-  container.appendChild(ol);
+  container.innerHTML = ol;
 });
 
 /* 
