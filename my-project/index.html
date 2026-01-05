@@ -9,8 +9,16 @@
   </head>
   <body>
     <h1 class="text-3xl font-bold underline">Taylor Swift Albums</h1>
-    <h2 id="api-response"></h2>
-    <div id="container"></div>
+    <div class="api-response" id="api-response">
+      <input
+        id="searchbar"
+        onkeyup="searchAlbum()"
+        type="text"
+        name="search"
+        placeholder="Search albums.."
+      />
+    </div>
+    <!-- <h2 id="api-response"></h2> -->
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
   </body>
