@@ -37,10 +37,41 @@ getData().then((data) => {
   });
 });
 
-function searchAlbum() {
-  let input = document.getElementById("searchbar").value;
+const resetPosts = () => {
+  searchDisplay.innerHTML = "";
+  postsContainer.innerHTML = "";
+  postsData.map((post) => createPost(post));
+};
+const handleSearchPosts = (query) => {
+  const searchQuery = query.trim().toLowerCase();
+
+  if (searchQuery.length <= 1) {
+    resetPosts();
+    return;
+  }
+
+  let searchResults = [...postsData].filter(
+    (post) =>
+      post.categories.some((category) =>
+        category.toLowerCase().includes(searchQuery)
+      ) || post.title.toLowerCase().includes(searchQuery)
+  );
+
+  if (searchResults.length == 0) {
+    searchDisplay.innerHTML = "No results found";
+  } else if (searchResults.length == 1) {
+    searchDisplay.innerHTML = `1 result found for your query: ${query}`;
+  } else {
+    searchDisplay.innerHTML = `${searchResults.length} results found for your query: ${query}`;
+  }
+  postsContainer.innerHTML = "";
+  searchResults.map((post) => createPost(post));
+};
+/* function searchAlbum() {
+  const container = document.querySelector("#api-response");
+  let input = document.getElementById("#searchbar").value;
   input = input.toLowerCase();
-  let x = document.getElementsByClassName("card-title");
+  let x = document.getElementsByClassName(".card");
   for (i = 0; i < x.length; i++) {
     if (!x[i].innerHTML.toLowerCase().includes(input)) {
       x[i].style.display = "none";
@@ -48,7 +79,7 @@ function searchAlbum() {
       x[i].style.display = "list-item";
     }
   }
-}
+} */
 /* getData().then((data) => {
   console.log(data);
   let ol = "<ol>";
