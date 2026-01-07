@@ -36,13 +36,44 @@ getData().then((data) => {
     );
   });
 });
+async function searchProducts(query) {
+  const searchInput = document.getElementById("search-bar");
+  const resultsList = document.getElementById("api-response");
+  if (!query.trim()) {
+    resultsList.innerHTML = "";
+    return;
+  }
+  try {
+    const res = await fetch("https://taylor-swift-api.vercel.app/api/albums/");
+    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+    const data = await res.json();
 
-const resetPosts = () => {
-  searchDisplay.innerHTML = "";
-  postsContainer.innerHTML = "";
-  postsData.map((post) => createPost(post));
-};
-const handleSearchPosts = (query) => {
+    // Render results
+    resultsList.innerHTML = "";
+    if (data.title.length === 0) {
+      resultsList.innerHTML = "<li>No results found</li>";
+      return;
+    }
+    data.forEach((card) => {
+      resultsList.insertAdjacentHTML(
+        "afterbegin",
+        `<ul id="list"><li>
+      <div class="card">
+      <h1 class="card-title">${card.title}</h1>
+    <img class="card-album-cover" src="${card.albumCover}" alt="Album Cover">
+    <p class="card-artist">Artist: ${card.artist}</p>
+    <p class="card-release-date">Release Date: ${card.releaseDate}</p>
+    </div>
+    </li>
+    </ul>`
+      );
+    });
+  } catch (err) {
+    console.error("Search API error:", err);
+    container.innerHTML = "<li>Error loading results</li>";
+  }
+}
+/* const handleSearchPosts = (query) => {
   const searchQuery = query.trim().toLowerCase();
 
   if (searchQuery.length <= 1) {
@@ -50,13 +81,11 @@ const handleSearchPosts = (query) => {
     return;
   }
 
-  let searchResults = [...postsData].filter(
-    (post) =>
-      post.categories.some((category) =>
-        category.toLowerCase().includes(searchQuery)
-      ) || post.title.toLowerCase().includes(searchQuery)
+  let searchResults = [...data].filter((card) =>
+    card.title.some((title) => title.toLowerCase().includes(searchQuery))
   );
 
+  const searchDisplay = document.querySelector("#search-display");
   if (searchResults.length == 0) {
     searchDisplay.innerHTML = "No results found";
   } else if (searchResults.length == 1) {
@@ -64,9 +93,9 @@ const handleSearchPosts = (query) => {
   } else {
     searchDisplay.innerHTML = `${searchResults.length} results found for your query: ${query}`;
   }
-  postsContainer.innerHTML = "";
-  searchResults.map((post) => createPost(post));
-};
+  container.innerHTML = "";
+  searchResults.map((card) => createPost(card));
+}; */
 /* function searchAlbum() {
   const container = document.querySelector("#api-response");
   let input = document.getElementById("#searchbar").value;
