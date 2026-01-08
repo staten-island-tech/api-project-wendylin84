@@ -1,6 +1,8 @@
 import "./style.css";
 
 async function getData(URL) {
+  const searchInput = document.getElementById("searchbar");
+  const resultsList = document.getElementById("api-response");
   try {
     const response = await fetch(
       "https://taylor-swift-api.vercel.app/api/albums/"
@@ -36,28 +38,36 @@ getData().then((data) => {
     );
   });
 });
+
 async function searchProducts(query) {
-  const searchInput = document.getElementById("search-bar");
-  const resultsList = document.getElementById("api-response");
   if (!query.trim()) {
     resultsList.innerHTML = "";
     return;
   }
   try {
-    const res = await fetch("https://taylor-swift-api.vercel.app/api/albums/");
+    const res = await fetch(
+      `https://taylor-swift-api.vercel.app/api/albums/${query}`
+    );
     if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
     const data = await res.json();
-
+    displayResults(data);
     // Render results
-    resultsList.innerHTML = "";
+    /*   resultsList.innerHTML = "";
     if (data.title.length === 0) {
       resultsList.innerHTML = "<li>No results found</li>";
       return;
-    }
-    data.forEach((card) => {
-      resultsList.insertAdjacentHTML(
-        "afterbegin",
-        `<ul id="list"><li>
+    } */
+  } catch (error) {
+    console.log(error);
+    console.log("There was an error fetching the data");
+  }
+}
+
+function displayResults(data) {
+  resultsDiv.innerHTML = data.length
+    ? data
+        .map(
+          (card) => `<ul id="list"><li>
       <div class="card">
       <h1 class="card-title">${card.title}</h1>
     <img class="card-album-cover" src="${card.albumCover}" alt="Album Cover">
@@ -66,13 +76,28 @@ async function searchProducts(query) {
     </div>
     </li>
     </ul>`
-      );
-    });
-  } catch (err) {
-    console.error("Search API error:", err);
-    container.innerHTML = "<li>Error loading results</li>";
-  }
+        )
+        .join("")
+    : "<div>No results found</div>";
 }
+/* searchProducts().then((data) => {
+  console.log(data);
+  const container = document.querySelector("#api-response");
+  data.forEach((card) => {
+    container.insertAdjacentHTML(
+      "afterbegin",
+      `<ul id="list"><li>
+      <div class="card">
+      <h1 class="card-title">${card.title}</h1>
+    <img class="card-album-cover" src="${card.albumCover}" alt="Album Cover">
+    <p class="card-artist">Artist: ${card.artist}</p>
+    <p class="card-release-date">Release Date: ${card.releaseDate}</p>
+    </div>
+    </li>
+    </ul>`
+    );
+  });
+}); */
 /* const handleSearchPosts = (query) => {
   const searchQuery = query.trim().toLowerCase();
 
