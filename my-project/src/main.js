@@ -1,8 +1,6 @@
 import "./style.css";
 
 async function getData(URL) {
-  const searchInput = document.getElementById("searchbar");
-  const resultsList = document.getElementById("api-response");
   try {
     const response = await fetch(
       "https://taylor-swift-api.vercel.app/api/albums/"
@@ -27,7 +25,7 @@ getData().then((data) => {
     container.insertAdjacentHTML(
       "afterbegin",
       `<ul id="list"><li>
-      <div class="card">
+      <div class="card bg-white gap-2 rounded-xl  p-4 w-64 flex flex-col">
       <h1 class="card-title">${card.title}</h1>
     <img class="card-album-cover" src="${card.albumCover}" alt="Album Cover">
     <p class="card-artist">Artist: ${card.artist}</p>
@@ -40,6 +38,11 @@ getData().then((data) => {
 });
 
 async function searchProducts(query) {
+  const handleSearchPosts = (query) => {
+    const searchQuery = query.trim().toLowerCase();
+  };
+  const searchInput = document.getElementById("searchbar");
+  const resultsList = document.getElementById("api-response");
   if (!query.trim()) {
     resultsList.innerHTML = "";
     return;
@@ -48,15 +51,12 @@ async function searchProducts(query) {
     const res = await fetch(
       `https://taylor-swift-api.vercel.app/api/albums/${query}`
     );
-    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-    const data = await res.json();
-    displayResults(data);
-    // Render results
-    /*   resultsList.innerHTML = "";
-    if (data.title.length === 0) {
-      resultsList.innerHTML = "<li>No results found</li>";
-      return;
-    } */
+    if (res.status != 200) {
+      throw new Error(res);
+    } else {
+      const data = await res.json(); //makes the data into JSON object we can use
+      return data;
+    }
   } catch (error) {
     console.log(error);
     console.log("There was an error fetching the data");
