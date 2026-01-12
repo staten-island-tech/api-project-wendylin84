@@ -57,6 +57,7 @@ function searchbar() {
         return;
       }
       const data = await response.json();
+      console.log(data);
       inject(data);
     } catch (error) {
       console.log(error);
