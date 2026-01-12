@@ -25,7 +25,7 @@ getData().then((data) => {
     container.insertAdjacentHTML(
       "afterbegin",
       `<ul id="list"><li>
-      <div class="card bg-white gap-2 rounded-xl  p-4 w-64 flex flex-col">
+      <div class="card rounded-box gap-2 bg-white p-4 w-64 flex flex-box">
       <h1 class="card-title">${card.title}</h1>
     <img class="card-album-cover" src="${card.albumCover}" alt="Album Cover">
     <p class="card-artist">Artist: ${card.artist}</p>
@@ -37,38 +37,43 @@ getData().then((data) => {
   });
 });
 
-async function searchProducts(query) {
-  const handleSearchPosts = (query) => {
-    const searchQuery = query.trim().toLowerCase();
-  };
-  const searchInput = document.getElementById("searchbar");
-  const resultsList = document.getElementById("api-response");
-  if (!query.trim()) {
-    resultsList.innerHTML = "";
-    return;
-  }
-  try {
-    const res = await fetch(
-      `https://taylor-swift-api.vercel.app/api/albums/${query}`
-    );
-    if (res.status != 200) {
-      throw new Error(res);
-    } else {
-      const data = await res.json(); //makes the data into JSON object we can use
-      return data;
+function searchbar() {
+  const input = document.querySelector("#searchbar");
+  const container = document.querySelector("#api-response");
+  const btn = document.querySelector("#search-button");
+  btn.addEventListener("click", async function newBar() {
+    const title = input.value.trim();
+    container.innerHTML = "";
+    if (title === "") {
+      container.innerHTML = "<p>Please enter a valid album title</p>";
+      return;
     }
-  } catch (error) {
-    console.log(error);
-    console.log("There was an error fetching the data");
-  }
+    try {
+      const response = await fetch(
+        `https://taylor-swift-api.vercel.app/api/albums/${title}`
+      );
+      if (response.status != 200) {
+        container.innerHTML = `<p> "${title}" not found</p>`;
+        return;
+      }
+      const data = await response.json();
+      inject(data);
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  });
 }
+searchbar();
 
-function displayResults(data) {
-  resultsDiv.innerHTML = data.length
-    ? data
-        .map(
-          (card) => `<ul id="list"><li>
-      <div class="card">
+/* newBar().then((data) => {
+  console.log(data);
+  const container = document.querySelector("#api-response");
+  data.forEach((card) => {
+    container.insertAdjacentHTML(
+      "afterbegin",
+      `<ul id="list"><li>
+      <div class="card bg-white gap-2 rounded-xl  p-4 w-64 flex flex-col">
       <h1 class="card-title">${card.title}</h1>
     <img class="card-album-cover" src="${card.albumCover}" alt="Album Cover">
     <p class="card-artist">Artist: ${card.artist}</p>
@@ -76,10 +81,10 @@ function displayResults(data) {
     </div>
     </li>
     </ul>`
-        )
-        .join("")
-    : "<div>No results found</div>";
-}
+    );
+  });
+});
+ */
 /* searchProducts().then((data) => {
   console.log(data);
   const container = document.querySelector("#api-response");
@@ -151,15 +156,18 @@ function displayResults(data) {
   container.innerHTML = ol;
 }); */
 
-/* function inject(card) {
+function inject(card) {
   const container = document.querySelector("#api-response");
   container.insertAdjacentHTML(
     "afterbegin",
-    `<div class="card">
-    <h2 class="card-title">${card.title}</h2>
-      <img class="card-img" src="${card.img}"/>
-    </div>`
+    `<ul id="list"><li>
+      <div class="card rounded-box bg-white gap-2   p-4 w-64 flex flex-box">
+      <h1 class="card-title">${card.title}</h1>
+    <img class="card-album-cover" src="${card.albumCover}" alt="Album Cover">
+    <p class="card-artist">Artist: ${card.artist}</p>
+    <p class="card-release-date">Release Date: ${card.releaseDate}</p>
+    </div>
+    </li>
+    </ul>`
   );
 }
-URL.forEach((card) => inject(card));
- */
